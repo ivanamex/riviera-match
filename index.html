@@ -584,9 +584,22 @@
     font-size: 1rem;
     flex-shrink: 0;
   }
+  .feature-label-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+  }
   .feature-label {
     font-size: 0.95rem;
     color: var(--text);
+  }
+  .feature-desc {
+    font-size: 0.78rem;
+    color: var(--muted);
+    font-weight: 300;
+    line-height: 1.45;
+    opacity: 0.85;
   }
   .dots {
     display: flex;
@@ -1290,9 +1303,10 @@ const PROPERTIES = [
 
 const FEATURE_GROUPS = [
   { heading: "Location & Environment", features: [
-    { id: "location", label: "Location & walkability", icon: "fa-location-dot" },
-    { id: "beach",    label: "Beach proximity",        icon: "fa-umbrella-beach" },
-    { id: "views",    label: "Natural light & views",  icon: "fa-sun" }
+    { id: "location",     label: "Location & walkability", desc: "How connected and walkable the area feels.",                              icon: "fa-location-dot" },
+    { id: "beach",        label: "Beach proximity",        desc: "How close you are to the sand.",                                          icon: "fa-umbrella-beach" },
+    { id: "city",         label: "City center proximity",  desc: "How quickly you can reach 5th Avenue and downtown.",                      icon: "fa-city" },
+    { id: "conveniences", label: "Daily conveniences",     desc: "Supermarkets, pharmacies, clinics, cafés — how easy is daily life.",     icon: "fa-basket-shopping" }
   ]},
   { heading: "The Home Itself", features: [
     { id: "size",     label: "Size (m²)",             icon: "fa-ruler-combined" },
@@ -1332,14 +1346,14 @@ function ensureRatings(propId) {
    ============================================================ */
 function pctFromAvg(avg) { return Math.round((avg / 5) * 100); }
 function rateAverage(ratings) {
-  const rated = Object.values(ratings).filter(v => v > 0);
+  const rated = FEATURES_FLAT.map(f => ratings[f.id] || 0).filter(v => v > 0);
   if (rated.length === 0) return 0;
   return rated.reduce((a,b) => a+b, 0) / rated.length;
 }
 function ratedCount(propId) {
   const r = state.ratings[propId];
   if (!r) return 0;
-  return Object.values(r).filter(v => v > 0).length;
+  return FEATURES_FLAT.filter(f => (r[f.id] || 0) > 0).length;
 }
 function isPropertyRated(propId) {
   return ratedCount(propId) > 0;
@@ -1542,7 +1556,10 @@ function renderFeatureRow(prop, feature) {
     <div class="feature-row">
       <div class="feature-heading">
         <div class="feature-icon"><i class="fa-solid ${feature.icon}"></i></div>
-        <div class="feature-label">${feature.label}</div>
+        <div class="feature-label-wrap">
+          <div class="feature-label">${feature.label}</div>
+          ${feature.desc ? `<div class="feature-desc">${feature.desc}</div>` : ''}
+        </div>
       </div>
       <div class="dots" data-prop="${prop.id}" data-feature="${feature.id}">
         ${[1,2,3,4,5].map(n => `<div class="dot ${n <= val && val > 0 ? 'filled' : ''}" data-val="${n}">${n}</div>`).join('')}
@@ -1749,7 +1766,7 @@ function computeRankings() {
     return {
       property: p,
       pct: pctFromAvg(avg),
-      rated: Object.values(r).filter(v => v > 0).length
+      rated: ratedCount(p.id)
     };
   }).sort((a, b) => b.pct - a.pct);
 }
@@ -1869,12 +1886,15 @@ function loadHash() {
     if (!r) return false;
     r.split(',').filter(Boolean).forEach(entry => {
       const [propId, digits] = entry.split(':');
-      if (!propId || !digits || digits.length !== FEATURES_FLAT.length) return;
+      if (!propId || !digits) return;
       ensureRatings(propId);
-      FEATURES_FLAT.forEach((feat, i) => {
+      // Map positionally up to whichever is shorter — if the hash was generated
+      // with a different FEATURES_FLAT layout, extras are dropped, missing pad to 0.
+      const n = Math.min(digits.length, FEATURES_FLAT.length);
+      for (let i = 0; i < n; i++) {
         const v = parseInt(digits[i], 10);
-        if (v >= 0 && v <= 5) state.ratings[propId][feat.id] = v;
-      });
+        if (v >= 0 && v <= 5) state.ratings[propId][FEATURES_FLAT[i].id] = v;
+      }
     });
     return true;
   } catch (e) { return false; }
