@@ -933,6 +933,39 @@
   }
   .share-btn:hover { border-color: var(--gold); color: var(--gold); transform: translateY(-2px); }
   .share-btn i { color: var(--gold); font-size: 0.85rem; }
+  .second-opinion-wrap {
+    margin-top: 56px;
+    padding: 28px 26px;
+    border: 1px solid var(--border);
+    background: rgba(184,150,90,0.04);
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    align-items: center;
+    text-align: center;
+  }
+  .second-opinion-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1.5rem;
+    color: var(--gold);
+    margin-bottom: 6px;
+  }
+  .second-opinion-sub {
+    color: var(--muted);
+    font-size: 0.9rem;
+    line-height: 1.55;
+    max-width: 440px;
+    margin: 0 auto;
+  }
+  @media (min-width: 900px) {
+    .second-opinion-wrap {
+      flex-direction: row;
+      justify-content: space-between;
+      text-align: left;
+    }
+    .second-opinion-sub { margin: 0; }
+  }
   .footer {
     text-align: center;
     margin-top: 72px;
@@ -1202,7 +1235,7 @@
     <h1 class="hero-title">Find what moves you.</h1>
     <p class="hero-copy">A home is more than square metres. It's the first coffee on the terrace. The sound of the sea before anyone else wakes. The life you're quietly building, one morning at a time.</p>
     <p class="hero-copy">You've walked through them all. Now let's discover which one already feels like yours.</p>
-    <div class="hero-personal">— Designed for you, Jack.</div>
+    <div class="hero-personal" id="hero-personal">— Designed for you, Jack.</div>
     <div class="hero-cta">
       <button class="btn-primary" onclick="begin()">Begin</button>
     </div>
@@ -1276,6 +1309,13 @@
       <button class="share-btn" onclick="shareWhatsApp()"><i class="fa-brands fa-whatsapp"></i> WhatsApp</button>
       <button class="share-btn" onclick="downloadPDF()"><i class="fa-solid fa-file-pdf"></i> PDF</button>
       <button class="share-btn" onclick="copyLink()"><i class="fa-solid fa-link"></i> Copy link</button>
+    </div>
+    <div class="second-opinion-wrap">
+      <div class="second-opinion-copy">
+        <h4 class="second-opinion-title">Get a second opinion</h4>
+        <p class="second-opinion-sub">Share this with someone — they'll rate it fresh, and we'll compare notes.</p>
+      </div>
+      <button class="btn-primary" onclick="inviteFriend()">Invite</button>
     </div>
     <div class="footer">Curated by Weber-Burić Real Estate · Playa del Carmen</div>
   </div>
@@ -2103,6 +2143,37 @@ function downloadPDF() {
 
   doc.save(`Riviera-Match-${CLIENT.name}-${new Date().toISOString().slice(0,10)}.pdf`);
 }
+function inviteFriend() {
+  const name = prompt("Who's the second opinion? (first name is fine)");
+  if (!name || !name.trim()) return;
+  const clean = name.trim();
+  // Clean-slate link — no hash, ?friend= only
+  const url = `${location.origin}${location.pathname}?friend=${encodeURIComponent(clean)}`;
+  const msg = `Hey ${clean}! ${CLIENT.name} wants your take on a few condos he's considering. Takes 5 minutes — your ratings come straight to me so we can compare. 👉 ${url}`;
+  if (confirm(`Link ready for ${clean}.\n\nTap OK to open WhatsApp with the message, or Cancel to copy the link instead.`)) {
+    window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+  } else {
+    const toast = document.getElementById('toast');
+    const done = () => {
+      if (toast) {
+        toast.textContent = `Link for ${clean} copied`;
+        toast.classList.add('show');
+        setTimeout(() => {
+          toast.classList.remove('show');
+          toast.textContent = 'Link copied';
+        }, 2400);
+      }
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(url).then(done).catch(done);
+    } else {
+      const ta = document.createElement('textarea');
+      ta.value = url; document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); } catch (e) {}
+      document.body.removeChild(ta); done();
+    }
+  }
+}
 function copyLink() {
   updateHash();
   const url = location.href;
@@ -2124,6 +2195,20 @@ function copyLink() {
 /* ============================================================
    INIT
    ============================================================ */
+// ?friend=<name> — if present, override CLIENT.name and start a clean session
+const urlParams = new URLSearchParams(window.location.search);
+const friendName = urlParams.get('friend');
+if (friendName && friendName.trim()) {
+  CLIENT.name = friendName.trim();
+  if (location.hash) history.replaceState(null, '', location.pathname + location.search);
+}
+
+// Populate hero-personal line with the current CLIENT.name (works for Jack + friends)
+(() => {
+  const hp = document.getElementById('hero-personal');
+  if (hp) hp.textContent = `— Designed for you, ${CLIENT.name}.`;
+})();
+
 // ESC closes lightbox first (if open), then the property modal
 document.addEventListener('keydown', e => {
   if (e.key !== 'Escape') return;
