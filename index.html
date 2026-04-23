@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Riviera Match · For Jack</title>
+<link rel="icon" type="image/png" href="images/logo/riviera-match-logo.png" />
+<link rel="apple-touch-icon" href="images/logo/riviera-match-logo.png" />
 <meta name="description" content="A curated property match experience by Weber-Burić Real Estate.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -107,6 +109,25 @@
     margin-bottom: 40px;
     opacity: 0;
     animation: fadeUp 1s 0.2s forwards;
+  }
+  .hero-logo {
+    margin-bottom: 36px;
+    opacity: 0;
+    animation: fadeUp 1s 0.2s forwards;
+  }
+  .hero-logo img {
+    width: 140px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+    filter: drop-shadow(0 4px 20px rgba(184,150,90,0.3));
+  }
+  @media (min-width: 900px) {
+    .hero-logo img { width: 170px; }
+  }
+  @media (max-width: 480px) {
+    .hero-logo img { width: 120px; }
+    .hero-logo { margin-bottom: 28px; }
   }
   .hero-title {
     font-size: clamp(2.75rem, 7vw, 5rem);
@@ -1034,7 +1055,9 @@
 <!-- ========== Section 1: Hero ========== -->
 <section class="section" id="hero">
   <div class="container hero-content">
-    <div class="kicker">Riviera Match</div>
+    <div class="hero-logo">
+      <img src="images/logo/riviera-match-logo.png" alt="Riviera Match" />
+    </div>
     <h1 class="hero-title">Find what moves you.</h1>
     <p class="hero-copy">A home is more than square metres. It's the first coffee on the terrace. The sound of the sea before anyone else wakes. The life you're quietly building, one morning at a time.</p>
     <p class="hero-copy">You've walked through them all. Now let's discover which one already feels like yours.</p>
