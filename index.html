@@ -278,8 +278,8 @@
 
   /* ============ Review — shared card chrome ============ */
   .property-card {
-    background: var(--card);
-    border: 1px solid var(--border);
+    background: #1f1b16;
+    border: 1px solid #2f2a24;
     padding: 28px 24px 24px;
     margin: 0 auto 28px;
     position: relative;
@@ -674,7 +674,9 @@
   }
 
   /* ============ Desktop grid (hidden on mobile) ============ */
-  #desktop-review { display: none; }
+  #desktop-review { display: none; width: 100%; }
+  #mobile-review { width: 100%; }
+  #mobile-card-mount { width: 100%; }
 
   /* ============ Results ============ */
   .results-block { margin-bottom: 64px; }
@@ -689,11 +691,15 @@
   }
   .match-grid { display: grid; gap: 22px; }
   .match-card {
-    background: var(--card);
-    border: 1px solid var(--border);
+    background: #1f1b16;
+    border: 1px solid #2f2a24;
     padding: 30px 26px;
     position: relative;
     transition: transform 0.4s ease, border-color 0.4s ease;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
   }
   .match-card:hover { border-color: rgba(184,150,90,0.45); transform: translateY(-3px); }
   .match-card.top { border-color: var(--gold); box-shadow: 0 0 70px rgba(184,150,90,0.15); }
@@ -945,20 +951,26 @@
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
       gap: 22px;
       margin-bottom: 40px;
+      width: 100%;
     }
     .tile {
-      background: var(--card);
-      border: 1px solid var(--border);
+      background: #1f1b16;
+      border: 1px solid #2f2a24;
       padding: 22px;
       cursor: pointer;
       transition: transform 0.3s ease, border-color 0.3s ease, background 0.3s ease;
       display: flex;
       flex-direction: column;
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+      position: relative;
+      overflow: hidden;
     }
     .tile:hover {
       transform: translateY(-4px);
       border-color: var(--gold);
-      background: var(--card-hover);
+      background: #25201a;
     }
     .tile.completed { border-color: var(--gold); }
     .tile-hero {
@@ -1247,7 +1259,10 @@ const PROPERTIES = [
     hoa: "$10,940 MXN/mo",
     tags: ["Pet-friendly", "Golf cart access"],
     hero: "images/awa/awa-entrada.jpg",
-    gallery: ["images/awa/awa-pool.jpg"]
+    gallery: [
+      "images/awa/awa-pool.jpg",
+      "images/awa/awa-hamacas.png"
+    ]
   },
   { id: "casa-de-piedra", condo: "Casa de Piedra", unit: "3BR & 4BR Penthouses · Pre-construction",
     location: "Playacar Phase 2", priceDisplay: "From $13,000,000 MXN",
