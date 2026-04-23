@@ -108,26 +108,25 @@
     text-transform: uppercase;
     margin-bottom: 40px;
     opacity: 0;
-    animation: fadeUp 1s 0.2s forwards;
+    animation: fadeUp 1s 0.5s forwards;
   }
   .hero-logo {
-    margin-bottom: 36px;
+    margin-bottom: 24px;
     opacity: 0;
     animation: fadeUp 1s 0.2s forwards;
   }
   .hero-logo img {
-    width: 140px;
+    width: 88px;
     height: auto;
     display: block;
     margin: 0 auto;
-    filter: drop-shadow(0 4px 20px rgba(184,150,90,0.3));
+    filter: drop-shadow(0 6px 24px rgba(184,150,90,0.25));
   }
   @media (min-width: 900px) {
-    .hero-logo img { width: 170px; }
+    .hero-logo img { width: 110px; }
   }
   @media (max-width: 480px) {
-    .hero-logo img { width: 120px; }
-    .hero-logo { margin-bottom: 28px; }
+    .hero-logo img { width: 76px; }
   }
   .hero-title {
     font-size: clamp(2.75rem, 7vw, 5rem);
@@ -1066,6 +1065,7 @@
     <div class="hero-logo">
       <img src="images/logo/riviera-match-logo.png" alt="Riviera Match" />
     </div>
+    <div class="kicker">Riviera Match</div>
     <h1 class="hero-title">Find what moves you.</h1>
     <p class="hero-copy">A home is more than square metres. It's the first coffee on the terrace. The sound of the sea before anyone else wakes. The life you're quietly building, one morning at a time.</p>
     <p class="hero-copy">You've walked through them all. Now let's discover which one already feels like yours.</p>
