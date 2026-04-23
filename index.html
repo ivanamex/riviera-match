@@ -137,39 +137,7 @@
     opacity: 0;
     animation: fadeUp 1.2s 2.1s forwards;
   }
-  .partner-input {
-    margin-bottom: 48px;
-    opacity: 0;
-    animation: fadeUp 1.2s 2.4s forwards;
-  }
-  .partner-label {
-    display: block;
-    font-size: 0.68rem;
-    font-weight: 600;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 14px;
-  }
-  .partner-input input {
-    background: transparent;
-    border: none;
-    border-bottom: 1px solid var(--border);
-    color: var(--text);
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.35rem;
-    font-style: italic;
-    text-align: center;
-    padding: 8px 12px 12px;
-    width: min(320px, 80vw);
-    transition: border-color 0.3s ease;
-  }
-  .partner-input input:focus {
-    outline: none;
-    border-bottom-color: var(--gold);
-  }
-  .partner-input input::placeholder { color: var(--muted); opacity: 0.7; font-style: italic; }
-  .hero-cta { opacity: 0; animation: fadeUp 1.2s 2.7s forwards; }
+  .hero-cta { opacity: 0; animation: fadeUp 1.2s 2.4s forwards; }
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(22px); }
     to { opacity: 1; transform: translateY(0); }
@@ -351,6 +319,76 @@
     transition: transform 0.4s ease;
   }
   .tile:hover .tile-hero-filled img { transform: scale(1.04); }
+
+  /* ============ Property carousel ============ */
+  .prop-carousel {
+    position: relative;
+    height: 320px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    margin-bottom: 24px;
+    background: rgba(184,150,90,0.04);
+  }
+  .prop-carousel-track {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+  .prop-carousel-slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    cursor: zoom-in;
+  }
+  .prop-carousel-slide.active { opacity: 1; z-index: 1; }
+  .prop-carousel-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .carousel-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(16,14,11,0.7);
+    border: 1px solid rgba(184,150,90,0.4);
+    color: var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 2;
+    transition: background 0.3s ease, transform 0.3s ease, border-color 0.3s ease;
+    backdrop-filter: blur(4px);
+  }
+  .carousel-arrow:hover {
+    background: rgba(16,14,11,0.9);
+    transform: translateY(-50%) scale(1.08);
+    border-color: var(--gold);
+  }
+  .carousel-prev { left: 14px; }
+  .carousel-next { right: 14px; }
+  .carousel-counter {
+    position: absolute;
+    bottom: 14px;
+    right: 16px;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    background: rgba(16,14,11,0.7);
+    padding: 6px 12px;
+    border: 1px solid rgba(184,150,90,0.3);
+    z-index: 2;
+    backdrop-filter: blur(4px);
+  }
+  @media (min-width: 900px) {
+    .prop-carousel { height: 420px; }
+  }
   .prop-hero-caption {
     font-size: 0.68rem;
     letter-spacing: 0.2em;
@@ -461,11 +499,6 @@
     border-top: 1px solid var(--border);
     margin-bottom: 6px;
   }
-  .column-headers {
-    display: none;
-    padding-left: 0;
-    margin-bottom: 10px;
-  }
   .feature-row {
     padding: 16px 0;
     border-bottom: 1px solid var(--border);
@@ -491,37 +524,45 @@
     font-size: 0.95rem;
     color: var(--text);
   }
-  .raters {
+  .dots {
     display: flex;
-    flex-direction: column;
-    gap: 14px;
+    gap: 10px;
+    justify-content: flex-start;
     padding-left: 48px;
   }
-  .rater { display: flex; flex-direction: column; gap: 8px; }
-  .rater-name {
-    font-size: 0.64rem;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: var(--muted);
-  }
-  .dots { display: flex; gap: 12px; }
   .dot {
-    width: 16px;
-    height: 16px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
-    background: var(--border);
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 500;
     cursor: pointer;
-    transition: transform 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
+    transition: all 0.25s ease;
+    user-select: none;
   }
-  .dot:hover { transform: scale(1.25); }
+  .dot:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+    transform: scale(1.08);
+  }
   .dot.filled {
     background: var(--gold);
-    box-shadow: 0 0 8px rgba(184,150,90,0.4);
+    border-color: var(--gold);
+    color: var(--bg);
+    font-weight: 600;
+    box-shadow: 0 0 10px rgba(184,150,90,0.4);
   }
   .dot.pulse { animation: dotPulse 0.4s ease; }
   @keyframes dotPulse {
     0% { transform: scale(1); }
-    50% { transform: scale(1.45); }
+    50% { transform: scale(1.15); }
     100% { transform: scale(1); }
   }
 
@@ -685,71 +726,13 @@
     margin-bottom: 20px;
   }
   .match-gallery .gallery-box { opacity: 0.35; }
-  .dual-bar {
-    display: flex;
-    gap: 18px;
-    font-size: 0.72rem;
+  .match-rated-count {
+    font-size: 0.68rem;
+    letter-spacing: 0.2em;
     color: var(--muted);
-    letter-spacing: 0.14em;
     text-transform: uppercase;
-    padding-top: 16px;
-    border-top: 1px solid var(--border);
-  }
-  .dual-bar strong { color: var(--gold); font-weight: 600; }
-
-  .agreement-insight {
-    max-width: 640px;
-    margin: 0 auto 64px;
-    padding: 24px 28px;
-    border-left: 2px solid var(--gold);
-    background: rgba(184,150,90,0.04);
-    color: var(--text);
-    font-style: italic;
-    font-size: 1rem;
-    line-height: 1.55;
-    text-align: left;
-  }
-  .agreement-insight strong { color: var(--gold); font-style: normal; font-weight: 500; }
-
-  .individual-columns {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 40px;
-  }
-  .individual-title {
-    font-size: 1.3rem;
-    font-style: italic;
-    margin-bottom: 18px;
-    color: var(--text);
-  }
-  .mini-card {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    padding: 16px 18px;
-    background: var(--card);
-    border: 1px solid var(--border);
-    margin-bottom: 10px;
-    transition: border-color 0.3s ease;
-  }
-  .mini-card:hover { border-color: rgba(184,150,90,0.35); }
-  .mini-rank {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.6rem;
-    font-style: italic;
-    color: var(--gold);
-    line-height: 1;
-    flex-shrink: 0;
-    width: 24px;
-  }
-  .mini-body { flex: 1; }
-  .mini-condo { font-size: 1.05rem; font-family: 'Cormorant Garamond', serif; line-height: 1.2; }
-  .mini-unit { font-size: 0.78rem; color: var(--muted); margin-top: 2px; }
-  .mini-pct {
-    font-family: 'Cormorant Garamond', serif;
-    color: var(--gold);
-    font-size: 1.3rem;
-    flex-shrink: 0;
+    text-align: right;
+    margin-top: 4px;
   }
   .soft-note {
     margin-top: 24px;
@@ -959,44 +942,18 @@
 
     .desktop-cta { text-align: center; padding: 20px 0 0; }
 
-    /* Desktop rating layout: horizontal columns */
-    .column-headers {
-      display: grid;
-      grid-template-columns: 1fr auto auto;
-      align-items: end;
-      gap: 32px;
-      padding: 0 0 10px;
-      border-bottom: 1px solid var(--border);
-      margin-bottom: 6px;
-    }
-    .column-headers-spacer { }
-    .column-headers-rater {
-      font-size: 0.64rem;
-      letter-spacing: 0.24em;
-      text-transform: uppercase;
-      color: var(--muted);
-      text-align: center;
-      min-width: 130px;
-    }
+    /* Desktop rating layout: heading left, dots right */
     .feature-row {
       display: grid;
-      grid-template-columns: 1fr auto auto;
+      grid-template-columns: 1fr auto;
       gap: 32px;
       align-items: center;
     }
     .feature-heading { margin-bottom: 0; }
-    .raters { display: contents; }
-    .rater {
-      flex-direction: column;
-      align-items: center;
-      min-width: 130px;
-    }
-    .rater-name { display: none; }
-    .dots { justify-content: center; }
+    .dots { padding-left: 0; justify-content: flex-end; }
 
     /* Match cards on desktop */
     .match-grid { gap: 26px; }
-    .individual-columns { grid-template-columns: 1fr 1fr; }
   }
 
   /* ============ Modal (desktop) ============ */
@@ -1060,8 +1017,8 @@
     .match-rank { font-size: 2.4rem; }
     .match-condo { font-size: 1.4rem; }
     .feature-icon { width: 32px; height: 32px; font-size: 0.95rem; }
-    .raters { padding-left: 44px; }
-    .dot { width: 18px; height: 18px; }
+    .dots { padding-left: 44px; gap: 8px; }
+    .dot { width: 44px; height: 44px; font-size: 0.95rem; }
     .btn-primary { padding: 15px 36px; letter-spacing: 0.22em; }
     .filter-btn { padding: 12px 24px; min-width: 72px; }
     .wizard-nav { padding-top: 20px; margin-top: 28px; }
@@ -1082,10 +1039,6 @@
     <p class="hero-copy">A home is more than square metres. It's the first coffee on the terrace. The sound of the sea before anyone else wakes. The life you're quietly building, one morning at a time.</p>
     <p class="hero-copy">You've walked through them all. Now let's discover which one already feels like yours.</p>
     <div class="hero-personal">— Designed for you, Jack.</div>
-    <div class="partner-input">
-      <label class="partner-label" for="partner-name-input">Who's choosing with you?</label>
-      <input type="text" id="partner-name-input" placeholder="Jack's wife" autocomplete="off" />
-    </div>
     <div class="hero-cta">
       <button class="btn-primary" onclick="begin()">Begin</button>
     </div>
@@ -1136,7 +1089,7 @@
   <div class="container">
     <div class="section-kicker">Chapter Two</div>
     <h2 class="section-title">Walk through them again.</h2>
-    <p class="section-sub">Rate how each one feels now.</p>
+    <p class="section-sub">Rate how each one feels now.<br><span style="font-size:0.85em;opacity:0.8;">Tap 1 (not important) to 5 (essential). Skip anything that doesn't matter.</span></p>
 
     <!-- Mobile wizard -->
     <div id="mobile-review">
@@ -1178,27 +1131,11 @@
   <div class="container">
     <div class="section-kicker">Chapter Three</div>
     <h2 class="section-title" id="results-title"></h2>
-    <p class="section-sub">Ranked by how each of you felt.</p>
+    <p class="section-sub">Ranked by how each felt to you.</p>
 
     <div class="results-block">
-      <h3 class="results-block-title">Your combined ranking</h3>
+      <h3 class="results-block-title">Your matches</h3>
       <div class="match-grid" id="combined-grid"></div>
-    </div>
-
-    <div class="agreement-insight" id="agreement-insight"></div>
-
-    <div class="results-block">
-      <h3 class="results-block-title">Individual top 3</h3>
-      <div class="individual-columns">
-        <div>
-          <h4 class="individual-title" id="jack-col-title">Jack's top 3</h4>
-          <div id="jack-top3"></div>
-        </div>
-        <div>
-          <h4 class="individual-title" id="partner-col-title">Partner's top 3</h4>
-          <div id="partner-top3"></div>
-        </div>
-      </div>
     </div>
 
     <div id="soft-note-container"></div>
@@ -1230,7 +1167,7 @@
 /* ============================================================
    CONFIG
    ============================================================ */
-const CLIENT = { name: "Jack", defaultPartner: "Jack's wife" };
+const CLIENT = { name: "Jack" };
 
 // ALPHABETICAL ORDER
 const PROPERTIES = [
@@ -1316,34 +1253,40 @@ const FEATURES_FLAT = FEATURE_GROUPS.flatMap(g => g.features);
    STATE
    ============================================================ */
 const state = {
-  partnerName: CLIENT.defaultPartner,
   filters: { beds: null, baths: null, pets: null },
   ratings: {},
-  completed: {},
   currentMobileIndex: 0,
   activeProperties: [],
   modalPropId: null
 };
 
+// state.ratings = { 'awa': {location: 5, beach: 4, ...}, 'casa-de-piedra': {...}, ... }
+// Feature value 0 = unrated (skipped in the average).
 function ensureRatings(propId) {
   if (!state.ratings[propId]) {
-    state.ratings[propId] = {
-      jack: Object.fromEntries(FEATURES_FLAT.map(f => [f.id, 3])),
-      partner: Object.fromEntries(FEATURES_FLAT.map(f => [f.id, 3]))
-    };
+    state.ratings[propId] = Object.fromEntries(FEATURES_FLAT.map(f => [f.id, 0]));
   }
 }
 
 /* ============================================================
    UTIL
    ============================================================ */
-function partnerLabel() { return state.partnerName || CLIENT.defaultPartner; }
 function pctFromAvg(avg) { return Math.round((avg / 5) * 100); }
-// state.ratings = { 'awa': { jack: {location: 5, beach: 4, ...}, partner: {...} }, 'casa-de-piedra': {...}, ... }
 function rateAverage(ratings) {
-  const vals = Object.values(ratings);
-  if (vals.length === 0) return 0;
-  return vals.reduce((a,b) => a+b, 0) / vals.length;
+  const rated = Object.values(ratings).filter(v => v > 0);
+  if (rated.length === 0) return 0;
+  return rated.reduce((a,b) => a+b, 0) / rated.length;
+}
+function ratedCount(propId) {
+  const r = state.ratings[propId];
+  if (!r) return 0;
+  return Object.values(r).filter(v => v > 0).length;
+}
+function isPropertyRated(propId) {
+  return ratedCount(propId) > 0;
+}
+function allRated() {
+  return state.activeProperties.length > 0 && state.activeProperties.every(p => isPropertyRated(p.id));
 }
 
 /* ============================================================
@@ -1394,7 +1337,7 @@ function renderPropertyCardDOM(prop) {
   const hoaHtml = prop.hoa ? `<div class="prop-hoa">HOA · ${prop.hoa}</div>` : '';
 
   card.innerHTML = `
-    ${renderHero(prop)}
+    ${renderCarousel(prop)}
     <h3 class="prop-condo">${prop.condo}</h3>
     <div class="prop-unit">${prop.unit}</div>
     <div class="prop-location">${prop.location}</div>
@@ -1413,21 +1356,71 @@ function renderPropertyCardDOM(prop) {
   return card;
 }
 
-function renderHero(prop) {
-  if (prop.hero) {
-    const src = escapeAttr(prop.hero);
+function renderCarousel(prop) {
+  // Combine hero + non-null gallery into one ordered photo set.
+  const photos = [];
+  if (prop.hero) photos.push(prop.hero);
+  (prop.gallery || []).forEach(g => { if (g) photos.push(g); });
+
+  if (photos.length === 0) {
     return `
-      <div class="prop-hero prop-hero-filled" onclick="openLightbox('${src}')">
-        <img src="${src}" alt="${escapeAttr(prop.condo)} — ${escapeAttr(prop.unit)}" onerror="imgHeroError(this)" />
+      <div class="prop-hero">
+        <i class="fa-regular fa-image"></i>
+        <div class="prop-hero-caption">Photo coming soon</div>
       </div>
     `;
   }
+
+  const alt = `${escapeAttr(prop.condo)} — ${escapeAttr(prop.unit)}`;
+  const slides = photos.map((src, i) => {
+    const s = escapeAttr(src);
+    return `
+      <div class="prop-carousel-slide${i === 0 ? ' active' : ''}" onclick="openLightbox('${s}')">
+        <img src="${s}" alt="${alt}" onerror="imgCarouselError(this)"${i === 0 ? '' : ' loading="lazy"'} />
+      </div>
+    `;
+  }).join('');
+
+  const controls = photos.length > 1 ? `
+    <button class="carousel-arrow carousel-prev" onclick="carouselPrev(this); event.stopPropagation()" aria-label="Previous photo"><i class="fa-solid fa-chevron-left"></i></button>
+    <button class="carousel-arrow carousel-next" onclick="carouselNext(this); event.stopPropagation()" aria-label="Next photo"><i class="fa-solid fa-chevron-right"></i></button>
+    <div class="carousel-counter">1 / ${photos.length}</div>
+  ` : '';
+
   return `
-    <div class="prop-hero">
-      <i class="fa-regular fa-image"></i>
-      <div class="prop-hero-caption">Photo coming soon</div>
+    <div class="prop-carousel" data-index="0" data-count="${photos.length}">
+      <div class="prop-carousel-track">${slides}</div>
+      ${controls}
     </div>
   `;
+}
+
+/* ============ Carousel nav ============ */
+function carouselPrev(btn) {
+  const car = btn.closest('.prop-carousel');
+  changeSlide(car, -1);
+}
+function carouselNext(btn) {
+  const car = btn.closest('.prop-carousel');
+  changeSlide(car, 1);
+}
+function changeSlide(car, direction) {
+  const slides = car.querySelectorAll('.prop-carousel-slide');
+  const count = slides.length;
+  let idx = parseInt(car.dataset.index || '0', 10);
+  idx = (idx + direction + count) % count;
+  car.dataset.index = idx;
+  slides.forEach((s, i) => s.classList.toggle('active', i === idx));
+  const counter = car.querySelector('.carousel-counter');
+  if (counter) counter.textContent = `${idx + 1} / ${count}`;
+}
+
+function imgCarouselError(img) {
+  const slide = img.closest('.prop-carousel-slide');
+  if (!slide) return;
+  slide.classList.add('img-failed');
+  slide.onclick = null;
+  slide.innerHTML = '<i class="fa-regular fa-image"></i><div class="img-failed-caption">Image unavailable</div>';
 }
 
 function renderGallery(prop) {
@@ -1512,43 +1505,24 @@ function renderTags(prop) {
 }
 
 function renderRatingBlock(prop) {
-  const columnHeaders = `
-    <div class="column-headers">
-      <div class="column-headers-spacer"></div>
-      <div class="column-headers-rater">${CLIENT.name}</div>
-      <div class="column-headers-rater">${escapeHtml(partnerLabel())}</div>
-    </div>
-  `;
-  const groups = FEATURE_GROUPS.map(group => `
+  return FEATURE_GROUPS.map(group => `
     <div class="rating-group">
       <div class="rating-group-heading">${group.heading}</div>
       ${group.features.map(f => renderFeatureRow(prop, f)).join('')}
     </div>
   `).join('');
-  return columnHeaders + groups;
 }
 
 function renderFeatureRow(prop, feature) {
-  const r = state.ratings[prop.id];
-  const jackVal = r.jack[feature.id];
-  const partnerVal = r.partner[feature.id];
-  const dotRow = (rater, val) => `
-    <div class="rater">
-      <div class="rater-name">${rater === 'jack' ? CLIENT.name : escapeHtml(partnerLabel())}</div>
-      <div class="dots" data-prop="${prop.id}" data-feature="${feature.id}" data-rater="${rater}">
-        ${[1,2,3,4,5].map(n => `<div class="dot ${n <= val ? 'filled' : ''}" data-val="${n}"></div>`).join('')}
-      </div>
-    </div>
-  `;
+  const val = state.ratings[prop.id][feature.id];
   return `
     <div class="feature-row">
       <div class="feature-heading">
         <div class="feature-icon"><i class="fa-solid ${feature.icon}"></i></div>
         <div class="feature-label">${feature.label}</div>
       </div>
-      <div class="raters">
-        ${dotRow('jack', jackVal)}
-        ${dotRow('partner', partnerVal)}
+      <div class="dots" data-prop="${prop.id}" data-feature="${feature.id}">
+        ${[1,2,3,4,5].map(n => `<div class="dot ${n <= val && val > 0 ? 'filled' : ''}" data-val="${n}">${n}</div>`).join('')}
       </div>
     </div>
   `;
@@ -1557,18 +1531,32 @@ function renderFeatureRow(prop, feature) {
 function attachRatingHandlers(root, propId) {
   root.querySelectorAll('.dots').forEach(row => {
     const feature = row.dataset.feature;
-    const rater = row.dataset.rater;
     row.querySelectorAll('.dot').forEach(dot => {
       dot.addEventListener('click', () => {
-        const val = parseInt(dot.dataset.val);
-        state.ratings[propId][rater][feature] = val;
-        row.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('filled', i + 1 <= val));
+        const val = parseInt(dot.dataset.val, 10);
+        // Click the same value that's already set → un-rate (back to 0)
+        const currentVal = state.ratings[propId][feature];
+        const newVal = currentVal === val ? 0 : val;
+        state.ratings[propId][feature] = newVal;
+        row.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('filled', newVal > 0 && i + 1 <= newVal));
         dot.classList.remove('pulse');
         void dot.offsetWidth;
         dot.classList.add('pulse');
+        // Bubble completion state up to UI chrome
+        onRatingChanged(propId);
       });
     });
   });
+}
+
+function onRatingChanged(propId) {
+  // Update mobile progress dot + "See results" button + desktop tile + desktop CTA
+  if (typeof updateProgress === 'function') updateProgress();
+  if (typeof updateWizardNav === 'function') updateWizardNav();
+  const tile = document.querySelector(`.tile[data-prop-id="${propId}"]`);
+  if (tile) tile.classList.toggle('completed', isPropertyRated(propId));
+  if (typeof updateDesktopCta === 'function') updateDesktopCta();
+  updateHash();
 }
 
 function escapeHtml(s) {
@@ -1591,12 +1579,14 @@ function renderMobileCard() {
 function updateProgress() {
   const total = state.activeProperties.length;
   const idx = state.currentMobileIndex;
-  document.getElementById('progress-label').textContent = `Property ${idx + 1} of ${total}`;
+  const labelEl = document.getElementById('progress-label');
+  if (labelEl) labelEl.textContent = `Property ${idx + 1} of ${total}`;
   const dotsEl = document.getElementById('progress-dots');
+  if (!dotsEl) return;
   dotsEl.innerHTML = state.activeProperties.map((p, i) => {
     let cls = 'pdot';
     if (i === idx) cls += ' active';
-    else if (state.completed[p.id]) cls += ' done';
+    else if (isPropertyRated(p.id)) cls += ' done';
     return `<span class="${cls}"></span>`;
   }).join('');
 }
@@ -1606,18 +1596,25 @@ function updateWizardNav() {
   const total = state.activeProperties.length;
   const prevBtn = document.getElementById('prev-btn');
   const nextBtn = document.getElementById('next-btn');
+  if (!prevBtn || !nextBtn) return;
   prevBtn.disabled = idx === 0;
-  nextBtn.textContent = idx === total - 1 ? 'See results' : 'Next property →';
+  const isLast = idx === total - 1;
+  if (isLast) {
+    const ok = allRated();
+    nextBtn.textContent = ok ? 'See results' : 'Rate each property to see results';
+    nextBtn.disabled = !ok;
+  } else {
+    nextBtn.textContent = 'Next property →';
+    nextBtn.disabled = false;
+  }
 }
 
 function nextProperty() {
-  const prop = state.activeProperties[state.currentMobileIndex];
-  if (prop) state.completed[prop.id] = true;
   if (state.currentMobileIndex < state.activeProperties.length - 1) {
     state.currentMobileIndex++;
     renderMobileCard();
     scrollToReviewTop();
-  } else {
+  } else if (allRated()) {
     showResults();
   }
   updateHash();
@@ -1643,7 +1640,7 @@ function scrollToReviewTop() {
 function renderDesktopGrid() {
   const grid = document.getElementById('tile-grid');
   grid.innerHTML = state.activeProperties.map(p => `
-    <article class="tile${state.completed[p.id] ? ' completed' : ''}" data-prop-id="${p.id}" onclick="openModal('${p.id}')">
+    <article class="tile${isPropertyRated(p.id) ? ' completed' : ''}" data-prop-id="${p.id}" onclick="openModal('${p.id}')">
       ${p.hero
         ? `<div class="tile-hero tile-hero-filled"><img src="${escapeAttr(p.hero)}" loading="lazy" alt="${escapeAttr(p.condo)}" onerror="imgTileError(this)" /></div>`
         : `<div class="tile-hero"><i class="fa-regular fa-image"></i></div>`}
@@ -1661,8 +1658,11 @@ function renderDesktopGrid() {
 }
 
 function updateDesktopCta() {
-  const allDone = state.activeProperties.every(p => state.completed[p.id]);
-  document.getElementById('see-results-desktop').disabled = !allDone;
+  const btn = document.getElementById('see-results-desktop');
+  if (!btn) return;
+  const ok = allRated();
+  btn.disabled = !ok;
+  btn.textContent = ok ? 'See results' : 'Rate each property to see results';
 }
 
 function openModal(propId) {
@@ -1684,9 +1684,8 @@ function closeModal() {
 
 function closeModalDone() {
   if (state.modalPropId) {
-    state.completed[state.modalPropId] = true;
     const tile = document.querySelector(`.tile[data-prop-id="${state.modalPropId}"]`);
-    if (tile) tile.classList.add('completed');
+    if (tile) tile.classList.toggle('completed', isPropertyRated(state.modalPropId));
     updateDesktopCta();
     updateHash();
   }
@@ -1697,8 +1696,6 @@ function closeModalDone() {
    NAVIGATION
    ============================================================ */
 function begin() {
-  const input = document.getElementById('partner-name-input').value.trim();
-  state.partnerName = input || CLIENT.defaultPartner;
   document.getElementById('filters-section').classList.add('visible');
   smoothScrollTo('filters-section');
 }
@@ -1728,25 +1725,18 @@ function smoothScrollTo(id) {
    RESULTS
    ============================================================ */
 function computeRankings() {
-  const results = state.activeProperties.map(p => {
-    const r = state.ratings[p.id];
-    const jackAvg = rateAverage(r.jack);
-    const partnerAvg = rateAverage(r.partner);
-    const combinedAvg = (jackAvg + partnerAvg) / 2;
+  return state.activeProperties.map(p => {
+    const r = state.ratings[p.id] || {};
+    const avg = rateAverage(r);
     return {
       property: p,
-      jackPct: pctFromAvg(jackAvg),
-      partnerPct: pctFromAvg(partnerAvg),
-      combinedPct: pctFromAvg(combinedAvg)
+      pct: pctFromAvg(avg),
+      rated: Object.values(r).filter(v => v > 0).length
     };
-  });
-  const combined = [...results].sort((a,b) => b.combinedPct - a.combinedPct);
-  const jack = [...results].sort((a,b) => b.jackPct - a.jackPct);
-  const partner = [...results].sort((a,b) => b.partnerPct - a.partnerPct);
-  return { combined, jack, partner };
+  }).sort((a, b) => b.pct - a.pct);
 }
 
-function renderCombinedCard(r, rank, isTop) {
+function renderResultCard(r, rank, isTop) {
   const p = r.property;
   const specs = [];
   specs.push(`<span><i class="fa-solid fa-bed"></i>${p.beds} bed${p.beds > 1 ? 's' : ''}</span>`);
@@ -1754,6 +1744,7 @@ function renderCombinedCard(r, rank, isTop) {
   if (p.m2) specs.push(`<span><i class="fa-solid fa-ruler-combined"></i>${p.m2} m²</span>`);
   const tagsHtml = renderTags(p);
   const hoa = p.hoa ? `<div class="match-hoa">HOA · ${p.hoa}</div>` : '';
+  const total = FEATURES_FLAT.length;
 
   return `
     <article class="match-card${isTop ? ' top' : ''}">
@@ -1766,8 +1757,9 @@ function renderCombinedCard(r, rank, isTop) {
           <div class="match-location">${p.location}</div>
         </div>
         <div class="match-percent-wrap">
-          <div class="match-percent">${r.combinedPct}%</div>
-          <div class="match-percent-label">combined</div>
+          <div class="match-percent">${r.pct}%</div>
+          <div class="match-percent-label">match</div>
+          <div class="match-rated-count">Rated ${r.rated} of ${total}</div>
         </div>
       </div>
       <div class="match-price">${p.priceDisplay}</div>
@@ -1776,10 +1768,6 @@ function renderCombinedCard(r, rank, isTop) {
       ${hoa}
       ${tagsHtml ? `<div class="match-tags">${tagsHtml}</div>` : ''}
       <div class="match-gallery">${renderMatchGalleryBoxes(p)}</div>
-      <div class="dual-bar">
-        <span>${CLIENT.name}: <strong>${r.jackPct}%</strong></span>
-        <span>${escapeHtml(partnerLabel())}: <strong>${r.partnerPct}%</strong></span>
-      </div>
     </article>
   `;
 }
@@ -1800,71 +1788,20 @@ function renderMatchGalleryBoxes(prop) {
   }).join('');
 }
 
-function renderMiniCard(r, rank, who) {
-  const p = r.property;
-  const pct = who === 'jack' ? r.jackPct : r.partnerPct;
-  return `
-    <div class="mini-card">
-      <div class="mini-rank">${rank}</div>
-      <div class="mini-body">
-        <div class="mini-condo">${p.condo}</div>
-        <div class="mini-unit">${p.unit}</div>
-      </div>
-      <div class="mini-pct">${pct}%</div>
-    </div>
-  `;
-}
-
-function buildAgreement(jackRanked, partnerRanked, combinedRanked) {
-  if (!jackRanked.length) return '';
-  const jackTop = jackRanked[0].property.id;
-  const partnerTop = partnerRanked[0].property.id;
-  const topThreeJack = jackRanked.slice(0, 3).map(r => r.property.id).sort().join('|');
-  const topThreePartner = partnerRanked.slice(0, 3).map(r => r.property.id).sort().join('|');
-  const sameTop3 = jackRanked.length >= 3 && topThreeJack === topThreePartner;
-
-  if (jackTop === partnerTop) {
-    const name = jackRanked[0].property.condo;
-    if (sameTop3) {
-      return `You both ranked <strong>${name}</strong> #1 — and you agree on the top three.`;
-    }
-    return `You both ranked <strong>${name}</strong> #1 — a shared favourite.`;
-  }
-  const jackName = jackRanked[0].property.condo;
-  const partnerName_ = partnerRanked[0].property.condo;
-  return `${CLIENT.name} chose <strong>${jackName}</strong> · ${escapeHtml(partnerLabel())} chose <strong>${partnerName_}</strong> — worth a conversation.`;
-}
-
 function showResults() {
-  // mark every active property completed (user has seen the whole flow)
-  state.activeProperties.forEach(p => state.completed[p.id] = true);
-
-  const { combined, jack, partner } = computeRankings();
+  const ranked = computeRankings();
 
   document.getElementById('results-title').textContent =
-    `${CLIENT.name} & ${partnerLabel()}, here's what you found.`;
+    `${CLIENT.name}, here's what you found.`;
 
   document.getElementById('combined-grid').innerHTML =
-    combined.length
-      ? combined.map((r, i) => renderCombinedCard(r, i + 1, i === 0)).join('')
+    ranked.length
+      ? ranked.map((r, i) => renderResultCard(r, i + 1, i === 0)).join('')
       : '<div class="soft-note">No properties matched your essentials. Adjust the filters to see options.</div>';
 
-  const insight = buildAgreement(jack, partner, combined);
-  const insightEl = document.getElementById('agreement-insight');
-  if (insight) { insightEl.innerHTML = insight; insightEl.style.display = 'block'; }
-  else insightEl.style.display = 'none';
-
-  document.getElementById('jack-col-title').textContent = `${CLIENT.name}'s top 3`;
-  document.getElementById('partner-col-title').textContent = `${partnerLabel()}'s top 3`;
-  document.getElementById('jack-top3').innerHTML = jack.slice(0, 3).map((r, i) => renderMiniCard(r, i + 1, 'jack')).join('');
-  document.getElementById('partner-top3').innerHTML = partner.slice(0, 3).map((r, i) => renderMiniCard(r, i + 1, 'partner')).join('');
-
-  const excluded = PROPERTIES.length - state.activeProperties.length;
   const note = document.getElementById('soft-note-container');
-  if (state.filters.pets === true && PROPERTIES.some(p => p.id === 'paseo-del-sol' && p.pets === false)) {
+  if (state.filters.pets === true) {
     note.innerHTML = `<div class="soft-note">Paseo del Sol was excluded due to pet policy.</div>`;
-  } else if (excluded > 0) {
-    note.innerHTML = `<div class="soft-note">${excluded} propert${excluded > 1 ? 'ies' : 'y'} filtered by your essentials.</div>`;
   } else {
     note.innerHTML = '';
   }
@@ -1877,24 +1814,25 @@ function showResults() {
 
 /* ============================================================
    URL STATE
-   Format: #f=beds,baths,petsFlag&partner=Name&r=propId:jjjjjjjjjj|pppppppppp,...
-   Features in fixed FEATURES_FLAT order.
+   Format: #f=beds,baths,petsFlag&r=propId:ratingString,...
+   Rating string = 10 digits (1–5 for rated, 0 for unrated), in FEATURES_FLAT order.
    ============================================================ */
 function ratingsToCompact(propId) {
   const r = state.ratings[propId];
   if (!r) return '';
-  const jack = FEATURES_FLAT.map(f => r.jack[f.id] || 3).join('');
-  const partner = FEATURES_FLAT.map(f => r.partner[f.id] || 3).join('');
-  return `${propId}:${jack}|${partner}`;
+  const digits = FEATURES_FLAT.map(f => {
+    const v = r[f.id];
+    return (typeof v === 'number' && v >= 0 && v <= 5) ? v : 0;
+  }).join('');
+  return `${propId}:${digits}`;
 }
 
 function updateHash() {
   const f = state.filters;
   if (f.beds == null || f.baths == null || f.pets == null) return;
   const filterPart = `${f.beds},${f.baths},${f.pets ? 1 : 0}`;
-  const partnerPart = encodeURIComponent(state.partnerName || '');
   const ratingParts = Object.keys(state.ratings).map(ratingsToCompact).filter(Boolean);
-  const hash = `#f=${filterPart}&partner=${partnerPart}&r=${ratingParts.join(',')}`;
+  const hash = `#f=${filterPart}&r=${ratingParts.join(',')}`;
   history.replaceState(null, '', hash);
 }
 
@@ -1908,22 +1846,15 @@ function loadHash() {
     const [beds, baths, pets] = f.split(',').map(Number);
     if ([beds, baths, pets].some(v => Number.isNaN(v))) return false;
     state.filters = { beds, baths, pets: pets === 1 };
-    const partner = params.get('partner');
-    if (partner) state.partnerName = decodeURIComponent(partner);
     const r = params.get('r') || '';
     r.split(',').filter(Boolean).forEach(entry => {
-      const [propId, rest] = entry.split(':');
-      if (!propId || !rest) return;
-      const [jackStr, partnerStr] = rest.split('|');
-      if (!jackStr || !partnerStr || jackStr.length !== FEATURES_FLAT.length || partnerStr.length !== FEATURES_FLAT.length) return;
+      const [propId, digits] = entry.split(':');
+      if (!propId || !digits || digits.length !== FEATURES_FLAT.length) return;
       ensureRatings(propId);
       FEATURES_FLAT.forEach((feat, i) => {
-        const j = parseInt(jackStr[i], 10);
-        const p = parseInt(partnerStr[i], 10);
-        if (j >= 1 && j <= 5) state.ratings[propId].jack[feat.id] = j;
-        if (p >= 1 && p <= 5) state.ratings[propId].partner[feat.id] = p;
+        const v = parseInt(digits[i], 10);
+        if (v >= 0 && v <= 5) state.ratings[propId][feat.id] = v;
       });
-      state.completed[propId] = true;
     });
     return true;
   } catch (e) { return false; }
@@ -1940,28 +1871,23 @@ function applyStateToFilterUI() {
     });
   });
   checkFilterComplete();
-  const partnerInput = document.getElementById('partner-name-input');
-  if (state.partnerName && state.partnerName !== CLIENT.defaultPartner) {
-    partnerInput.value = state.partnerName;
-  }
 }
 
 /* ============================================================
    SHARE
    ============================================================ */
-function topCombinedText() {
-  const { combined } = computeRankings();
-  return combined.slice(0, 3)
-    .map((r, i) => `${i + 1}. ${r.property.condo} — ${r.property.unit} (${r.combinedPct}% combined)`)
+function topMatchesText() {
+  return computeRankings().slice(0, 3)
+    .map((r, i) => `${i + 1}. ${r.property.condo} — ${r.property.unit} (${r.pct}% match)`)
     .join('\n');
 }
 function shareEmail() {
-  const subject = encodeURIComponent(`${CLIENT.name} & ${partnerLabel()}'s Riviera Maya matches`);
-  const body = encodeURIComponent(`${CLIENT.name} & ${partnerLabel()}'s Riviera Maya matches:\n\n${topCombinedText()}\n\nFull results: ${location.href}\n\n— Weber-Burić Real Estate`);
+  const subject = encodeURIComponent(`${CLIENT.name}'s Riviera Maya matches`);
+  const body = encodeURIComponent(`${CLIENT.name}'s Riviera Maya matches:\n\n${topMatchesText()}\n\nFull results: ${location.href}\n\n— Weber-Burić Real Estate`);
   window.location.href = `mailto:?subject=${subject}&body=${body}`;
 }
 function shareWhatsApp() {
-  const text = encodeURIComponent(`${CLIENT.name} & ${partnerLabel()}'s Riviera Maya matches:\n\n${topCombinedText()}\n\nFull results: ${location.href}`);
+  const text = encodeURIComponent(`${CLIENT.name}'s Riviera Maya matches:\n\n${topMatchesText()}\n\nFull results: ${location.href}`);
   window.open(`https://wa.me/?text=${text}`, '_blank');
 }
 function copyLink() {
