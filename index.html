@@ -183,6 +183,17 @@
     animation: fadeUp 1.2s 2.1s forwards;
   }
   .hero-cta { opacity: 0; animation: fadeUp 1.2s 2.4s forwards; }
+  .hero-secondary-cta {
+    margin-top: 18px;
+    opacity: 0;
+    animation: fadeUp 1.2s 2.7s forwards;
+  }
+  .hero-secondary-cta .btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .hero-secondary-cta i { font-size: 0.9em; }
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(22px); }
     to { opacity: 1; transform: translateY(0); }
@@ -1239,6 +1250,11 @@
     <div class="hero-cta">
       <button class="btn-primary" onclick="begin()">Begin</button>
     </div>
+    <div class="hero-secondary-cta">
+      <button class="btn-ghost" onclick="inviteSecondOpinion()">
+        <i class="fa-solid fa-user-plus"></i> Invite a second opinion
+      </button>
+    </div>
   </div>
 </section>
 
@@ -1315,7 +1331,7 @@
         <h4 class="second-opinion-title">Get a second opinion</h4>
         <p class="second-opinion-sub">Share this with someone — they'll rate it fresh, and we'll compare notes.</p>
       </div>
-      <button class="btn-primary" onclick="inviteFriend()">Invite</button>
+      <button class="btn-primary" onclick="inviteSecondOpinion()">Invite</button>
     </div>
     <div class="footer">Curated by Weber-Burić Real Estate · Playa del Carmen</div>
   </div>
@@ -2143,35 +2159,28 @@ function downloadPDF() {
 
   doc.save(`Riviera-Match-${CLIENT.name}-${new Date().toISOString().slice(0,10)}.pdf`);
 }
-function inviteFriend() {
-  const name = prompt("Who's the second opinion? (first name is fine)");
-  if (!name || !name.trim()) return;
-  const clean = name.trim();
-  // Clean-slate link — no hash, ?friend= only
-  const url = `${location.origin}${location.pathname}?friend=${encodeURIComponent(clean)}`;
-  const msg = `Hey ${clean}! ${CLIENT.name} wants your take on a few condos he's considering. Takes 5 minutes — your ratings come straight to me so we can compare. 👉 ${url}`;
-  if (confirm(`Link ready for ${clean}.\n\nTap OK to open WhatsApp with the message, or Cancel to copy the link instead.`)) {
-    window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+function inviteSecondOpinion() {
+  const url = location.origin + location.pathname;
+  const done = () => {
+    const t = document.getElementById('toast');
+    if (!t) return;
+    t.textContent = 'Invite link copied — share it with anyone';
+    t.classList.add('show');
+    setTimeout(() => {
+      t.classList.remove('show');
+      setTimeout(() => t.textContent = 'Link copied', 400);
+    }, 2800);
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(url).then(done).catch(done);
   } else {
-    const toast = document.getElementById('toast');
-    const done = () => {
-      if (toast) {
-        toast.textContent = `Link for ${clean} copied`;
-        toast.classList.add('show');
-        setTimeout(() => {
-          toast.classList.remove('show');
-          toast.textContent = 'Link copied';
-        }, 2400);
-      }
-    };
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(url).then(done).catch(done);
-    } else {
-      const ta = document.createElement('textarea');
-      ta.value = url; document.body.appendChild(ta); ta.select();
-      try { document.execCommand('copy'); } catch (e) {}
-      document.body.removeChild(ta); done();
-    }
+    const ta = document.createElement('textarea');
+    ta.value = url;
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); } catch (e) {}
+    document.body.removeChild(ta);
+    done();
   }
 }
 function copyLink() {
