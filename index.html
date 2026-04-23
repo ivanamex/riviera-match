@@ -927,8 +927,8 @@
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
   /* ============ Progressive reveal ============ */
-  #filters-section, #review-section, #results-section, #share-section { display: none; }
-  #filters-section.visible, #review-section.visible, #results-section.visible, #share-section.visible {
+  #review-section, #results-section, #share-section { display: none; }
+  #review-section.visible, #results-section.visible, #share-section.visible {
     display: flex;
     animation: sectionFade 0.8s ease forwards;
   }
@@ -1128,51 +1128,12 @@
   </div>
 </section>
 
-<!-- ========== Section 2: Filters ========== -->
-<section class="section" id="filters-section">
-  <div class="container">
-    <div class="section-kicker">Chapter One</div>
-    <h2 class="section-title">A few essentials</h2>
-    <p class="section-sub">Let's narrow it down.</p>
-
-    <div class="filter-group">
-      <span class="filter-label">Minimum bedrooms</span>
-      <div class="filter-buttons" data-filter="beds">
-        <button class="filter-btn" data-val="2">2</button>
-        <button class="filter-btn" data-val="3">3</button>
-        <button class="filter-btn" data-val="4">4</button>
-      </div>
-    </div>
-
-    <div class="filter-group">
-      <span class="filter-label">Minimum bathrooms</span>
-      <div class="filter-buttons" data-filter="baths">
-        <button class="filter-btn" data-val="2">2</button>
-        <button class="filter-btn" data-val="3">3</button>
-        <button class="filter-btn" data-val="4">4+</button>
-      </div>
-    </div>
-
-    <div class="filter-group">
-      <span class="filter-label">Do you have pets?</span>
-      <div class="filter-buttons" data-filter="pets">
-        <button class="filter-btn" data-val="1">Yes</button>
-        <button class="filter-btn" data-val="0">No</button>
-      </div>
-    </div>
-
-    <div class="center-cta">
-      <button class="btn-primary" id="filter-continue" disabled onclick="continueToReview()">Continue</button>
-    </div>
-  </div>
-</section>
-
-<!-- ========== Section 3: Property Review ========== -->
+<!-- ========== Section 2: Property Review ========== -->
 <section class="section" id="review-section">
   <div class="container">
-    <div class="section-kicker">Chapter Two</div>
+    <div class="section-kicker">Chapter One</div>
     <h2 class="section-title">Walk through them again.</h2>
-    <p class="section-sub">Rate how each one feels now.<br><span style="font-size:0.85em;opacity:0.8;">Tap 1 (not important) to 5 (essential). Skip anything that doesn't matter.</span></p>
+    <p class="section-sub">Each condo offers multiple units — these are starting prices for a 2BR penthouse. Rate how each one feels to help us narrow down to your favourite.<br><span style="font-size:0.85em;opacity:0.8;">Tap 1 (not important) to 5 (essential). Skip anything that doesn't matter.</span></p>
 
     <!-- Mobile wizard -->
     <div id="mobile-review">
@@ -1212,7 +1173,7 @@
 <!-- ========== Section 4: Results ========== -->
 <section class="section" id="results-section">
   <div class="container">
-    <div class="section-kicker">Chapter Three</div>
+    <div class="section-kicker">Chapter Two</div>
     <h2 class="section-title" id="results-title"></h2>
     <p class="section-sub">Ranked by how each felt to you.</p>
 
@@ -1256,7 +1217,7 @@ const CLIENT = { name: "Jack" };
 // ALPHABETICAL ORDER
 const PROPERTIES = [
   { id: "awa", condo: "Awa", unit: "3BR Penthouse",
-    location: "Playacar Phase 2", priceDisplay: "$875,000 USD",
+    location: "Playacar Phase 2", priceDisplay: "Starting from $670,000 USD · 2BR Penthouse",
     beds: 3, baths: 3.5, m2: null,
     pets: true, golfCart: true,
     standout: "Private rooftop jacuzzi, BBQ, solar panels, furnished",
@@ -1270,7 +1231,7 @@ const PROPERTIES = [
     ]
   },
   { id: "casa-de-piedra", condo: "Casa de Piedra", unit: "3BR & 4BR Penthouses · Pre-construction",
-    location: "Playacar Phase 2", priceDisplay: "From $13,000,000 MXN",
+    location: "Playacar Phase 2", priceDisplay: "Starting from $730,000 USD · 2BR Penthouse",
     beds: 3, baths: 3, m2: null,
     pets: true, golfCart: true, preConstruction: true,
     standout: "Brand new, private golf cart to beach & 5th Ave, premium finishes",
@@ -1284,7 +1245,7 @@ const PROPERTIES = [
     ]
   },
   { id: "elements", condo: "Elements", unit: "3BR Penthouse (PH7)",
-    location: "Zazil-Ha, Playa del Carmen", priceDisplay: "$1,100,000 USD",
+    location: "Zazil-Ha, Playa del Carmen", priceDisplay: "Starting from $800,000 USD · 2BR Penthouse",
     beds: 3, baths: 3, m2: 200,
     pets: true, golfCart: false,
     standout: "Two terraces, jacuzzi, Caribbean views",
@@ -1298,7 +1259,7 @@ const PROPERTIES = [
     ]
   },
   { id: "mareazul", condo: "Mareazul", unit: "3BR Ground Floor",
-    location: "Playa del Carmen (beachfront)", priceDisplay: "$16,800,000 MXN",
+    location: "Playa del Carmen (beachfront)", priceDisplay: "Starting from $840,000 USD · 2BR Penthouse",
     beds: 3, baths: 4.5, m2: 221,
     pets: true, golfCart: false,
     standout: "221m² + 25m² terrace, jacuzzi, service room, 2 parking",
@@ -1312,7 +1273,7 @@ const PROPERTIES = [
     ]
   },
   { id: "paseo-del-sol", condo: "Paseo del Sol", unit: "3BR Penthouse",
-    location: "Playacar Phase 2", priceDisplay: "$690,000 USD",
+    location: "Playacar Phase 2", priceDisplay: "Starting from $650,000 USD · 2BR Penthouse",
     beds: 3, baths: 2, m2: 249,
     pets: false, golfCart: false,
     standout: "Furnished, 249m², resort-style amenities",
@@ -1352,7 +1313,6 @@ const FEATURES_FLAT = FEATURE_GROUPS.flatMap(g => g.features);
    STATE
    ============================================================ */
 const state = {
-  filters: { beds: null, baths: null, pets: null },
   ratings: {},
   currentMobileIndex: 0,
   activeProperties: [],
@@ -1386,36 +1346,6 @@ function isPropertyRated(propId) {
 }
 function allRated() {
   return state.activeProperties.length > 0 && state.activeProperties.every(p => isPropertyRated(p.id));
-}
-
-/* ============================================================
-   FILTERS
-   ============================================================ */
-function setupFilters() {
-  document.querySelectorAll('.filter-buttons').forEach(group => {
-    const key = group.dataset.filter;
-    group.querySelectorAll('.filter-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        group.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        const val = btn.dataset.val;
-        state.filters[key] = key === 'pets' ? (val === '1') : parseInt(val);
-        checkFilterComplete();
-      });
-    });
-  });
-}
-function checkFilterComplete() {
-  const f = state.filters;
-  const done = f.beds !== null && f.baths !== null && f.pets !== null;
-  document.getElementById('filter-continue').disabled = !done;
-}
-function passesFilters(p) {
-  const f = state.filters;
-  if (p.beds < f.beds) return false;
-  if (p.baths < f.baths) return false;
-  if (f.pets === true && p.pets === false) return false;
-  return true;
 }
 
 /* ============================================================
@@ -1795,12 +1725,7 @@ function closeModalDone() {
    NAVIGATION
    ============================================================ */
 function begin() {
-  document.getElementById('filters-section').classList.add('visible');
-  smoothScrollTo('filters-section');
-}
-
-function continueToReview() {
-  state.activeProperties = PROPERTIES.filter(passesFilters);
+  state.activeProperties = PROPERTIES;
   state.activeProperties.forEach(p => ensureRatings(p.id));
   state.currentMobileIndex = 0;
   renderMobileCard();
@@ -1898,12 +1823,7 @@ function showResults() {
       ? ranked.map((r, i) => renderResultCard(r, i + 1, i === 0)).join('')
       : '<div class="soft-note">No properties matched your essentials. Adjust the filters to see options.</div>';
 
-  const note = document.getElementById('soft-note-container');
-  if (state.filters.pets === true) {
-    note.innerHTML = `<div class="soft-note">Paseo del Sol was excluded due to pet policy.</div>`;
-  } else {
-    note.innerHTML = '';
-  }
+  document.getElementById('soft-note-container').innerHTML = '';
 
   document.getElementById('results-section').classList.add('visible');
   document.getElementById('share-section').classList.add('visible');
@@ -1932,7 +1852,7 @@ function showResults() {
 
 /* ============================================================
    URL STATE
-   Format: #f=beds,baths,petsFlag&r=propId:ratingString,...
+   Format: #r=propId:ratingString,...
    Rating string = 10 digits (1–5 for rated, 0 for unrated), in FEATURES_FLAT order.
    ============================================================ */
 function ratingsToCompact(propId) {
@@ -1946,12 +1866,9 @@ function ratingsToCompact(propId) {
 }
 
 function updateHash() {
-  const f = state.filters;
-  if (f.beds == null || f.baths == null || f.pets == null) return;
-  const filterPart = `${f.beds},${f.baths},${f.pets ? 1 : 0}`;
   const ratingParts = Object.keys(state.ratings).map(ratingsToCompact).filter(Boolean);
-  const hash = `#f=${filterPart}&r=${ratingParts.join(',')}`;
-  history.replaceState(null, '', hash);
+  if (ratingParts.length === 0) return;
+  history.replaceState(null, '', `#r=${ratingParts.join(',')}`);
 }
 
 function loadHash() {
@@ -1959,12 +1876,8 @@ function loadHash() {
   if (!hash) return false;
   try {
     const params = new URLSearchParams(hash);
-    const f = params.get('f');
-    if (!f) return false;
-    const [beds, baths, pets] = f.split(',').map(Number);
-    if ([beds, baths, pets].some(v => Number.isNaN(v))) return false;
-    state.filters = { beds, baths, pets: pets === 1 };
-    const r = params.get('r') || '';
+    const r = params.get('r');
+    if (!r) return false;
     r.split(',').filter(Boolean).forEach(entry => {
       const [propId, digits] = entry.split(':');
       if (!propId || !digits || digits.length !== FEATURES_FLAT.length) return;
@@ -1976,19 +1889,6 @@ function loadHash() {
     });
     return true;
   } catch (e) { return false; }
-}
-
-function applyStateToFilterUI() {
-  document.querySelectorAll('.filter-buttons').forEach(group => {
-    const key = group.dataset.filter;
-    const raw = state.filters[key];
-    if (raw == null) return;
-    const val = key === 'pets' ? (raw ? '1' : '0') : String(raw);
-    group.querySelectorAll('.filter-btn').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.val === val);
-    });
-  });
-  checkFilterComplete();
 }
 
 /* ============================================================
@@ -2076,8 +1976,6 @@ function copyLink() {
 /* ============================================================
    INIT
    ============================================================ */
-setupFilters();
-
 // ESC closes lightbox first (if open), then the property modal
 document.addEventListener('keydown', e => {
   if (e.key !== 'Escape') return;
@@ -2086,11 +1984,9 @@ document.addEventListener('keydown', e => {
 });
 
 if (loadHash()) {
-  document.getElementById('filters-section').classList.add('visible');
-  document.getElementById('review-section').classList.add('visible');
-  applyStateToFilterUI();
-  state.activeProperties = PROPERTIES.filter(passesFilters);
+  state.activeProperties = PROPERTIES;
   state.activeProperties.forEach(p => ensureRatings(p.id));
+  document.getElementById('review-section').classList.add('visible');
   renderMobileCard();
   renderDesktopGrid();
   // jump straight to results
