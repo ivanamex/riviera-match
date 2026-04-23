@@ -89,6 +89,10 @@
   #hero {
     background: radial-gradient(ellipse at 50% 0%, rgba(255,220,170,0.05) 0%, transparent 60%);
     text-align: center;
+    padding-top: 60px;
+  }
+  @media (max-width: 640px) {
+    #hero { padding-top: 40px; }
   }
   #hero::before {
     content: '';
@@ -110,23 +114,41 @@
     opacity: 0;
     animation: fadeUp 1s 0.5s forwards;
   }
+  .kicker-wrap {
+    margin-bottom: 40px;
+    opacity: 0;
+    animation: fadeUp 1s 0.5s forwards;
+  }
+  .kicker-wrap .kicker {
+    margin-bottom: 8px;
+    animation: none;
+    opacity: 1;
+  }
+  .kicker-by {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 0.95rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-align: center;
+  }
   .hero-logo {
     margin-bottom: 24px;
     opacity: 0;
     animation: fadeUp 1s 0.2s forwards;
   }
   .hero-logo img {
-    width: 88px;
+    width: 140px;
     height: auto;
     display: block;
     margin: 0 auto;
-    filter: drop-shadow(0 6px 24px rgba(184,150,90,0.25));
+    filter: drop-shadow(0 8px 28px rgba(184,150,90,0.3));
   }
   @media (min-width: 900px) {
-    .hero-logo img { width: 110px; }
+    .hero-logo img { width: 180px; }
   }
   @media (max-width: 480px) {
-    .hero-logo img { width: 76px; }
+    .hero-logo img { width: 120px; }
   }
   .hero-title {
     font-size: clamp(2.75rem, 7vw, 5rem);
@@ -1072,7 +1094,10 @@
     <div class="hero-logo">
       <img src="images/logo/riviera-match-logo.png" alt="Riviera Match" />
     </div>
-    <div class="kicker">Riviera Match</div>
+    <div class="kicker-wrap">
+      <div class="kicker">Riviera Match</div>
+      <div class="kicker-by">by Weber-Burić</div>
+    </div>
     <h1 class="hero-title">Find what moves you.</h1>
     <p class="hero-copy">A home is more than square metres. It's the first coffee on the terrace. The sound of the sea before anyone else wakes. The life you're quietly building, one morning at a time.</p>
     <p class="hero-copy">You've walked through them all. Now let's discover which one already feels like yours.</p>
