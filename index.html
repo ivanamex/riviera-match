@@ -1357,11 +1357,6 @@ function renderPropertyCardDOM(prop) {
   card.className = 'property-card';
   card.dataset.propId = prop.id;
 
-  const specs = [];
-  specs.push(`<span><i class="fa-solid fa-bed"></i>${prop.beds} bed${prop.beds > 1 ? 's' : ''}</span>`);
-  specs.push(`<span><i class="fa-solid fa-bath"></i>${prop.baths} bath${prop.baths > 1 ? 's' : ''}</span>`);
-  if (prop.m2) specs.push(`<span><i class="fa-solid fa-ruler-combined"></i>${prop.m2} m²</span>`);
-
   const tagsHtml = renderTags(prop);
   const hoaHtml = prop.hoa ? `<div class="prop-hoa">HOA · ${prop.hoa}</div>` : '';
 
@@ -1371,7 +1366,6 @@ function renderPropertyCardDOM(prop) {
     <div class="prop-unit">${prop.unit}</div>
     <div class="prop-location">${prop.location}</div>
     <div class="prop-price">${prop.priceDisplay}</div>
-    <div class="prop-specs">${specs.join('')}</div>
     ${hoaHtml}
     ${tagsHtml ? `<div class="prop-tags">${tagsHtml}</div>` : ''}
     <div class="prop-standout">"${prop.standout}"</div>
@@ -1762,10 +1756,6 @@ function computeRankings() {
 
 function renderResultCard(r, rank, isTop) {
   const p = r.property;
-  const specs = [];
-  specs.push(`<span><i class="fa-solid fa-bed"></i>${p.beds} bed${p.beds > 1 ? 's' : ''}</span>`);
-  specs.push(`<span><i class="fa-solid fa-bath"></i>${p.baths} bath${p.baths > 1 ? 's' : ''}</span>`);
-  if (p.m2) specs.push(`<span><i class="fa-solid fa-ruler-combined"></i>${p.m2} m²</span>`);
   const tagsHtml = renderTags(p);
   const hoa = p.hoa ? `<div class="match-hoa">HOA · ${p.hoa}</div>` : '';
   const total = FEATURES_FLAT.length;
@@ -1787,7 +1777,6 @@ function renderResultCard(r, rank, isTop) {
         </div>
       </div>
       <div class="match-price">${p.priceDisplay}</div>
-      <div class="match-specs">${specs.join('')}</div>
       <div class="match-standout">"${p.standout}"</div>
       ${hoa}
       ${tagsHtml ? `<div class="match-tags">${tagsHtml}</div>` : ''}
@@ -1939,13 +1928,12 @@ function downloadPDF() {
     doc.text(p.unit, 20, y + 6);
     doc.text(p.location, 20, y + 12);
     doc.text(p.priceDisplay, 20, y + 18);
-    doc.text(`${p.beds} bed · ${p.baths} bath${p.m2 ? ` · ${p.m2}m²` : ''}`, 20, y + 24);
 
     doc.setTextColor(120, 120, 120);
     doc.setFontSize(9);
-    doc.text(p.standout, 20, y + 32, { maxWidth: 170 });
+    doc.text(p.standout, 20, y + 26, { maxWidth: 170 });
 
-    y += 48;
+    y += 42;
     if (y > 260 && i < ranked.length - 1) { doc.addPage(); y = 30; }
   });
 
