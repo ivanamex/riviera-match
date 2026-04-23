@@ -79,11 +79,16 @@
     stroke-linecap: round;
     stroke-linejoin: round;
   }
-  .leaf-tl { width: 180px; height: 230px; top: 0; left: 0; }
-  .leaf-tr { width: 150px; height: 190px; top: 0; right: 0; transform: scaleX(-1); transform-origin: center; }
-  .leaf-bl { width: 200px; height: 250px; bottom: 0; left: 0; transform: scaleY(-1); transform-origin: center; }
-  .leaf-br { width: 170px; height: 210px; bottom: 0; right: 0; transform: scale(-1, -1); transform-origin: center; }
+  /* Four corners — each leaf is its own self-contained SVG, positioned with CSS */
+  .leaf-tl { top: -40px; left: -60px; width: 340px; height: 440px; }
+  .leaf-tr { top: -30px; right: -50px; width: 300px; height: 380px; transform: scaleX(-1); }
+  .leaf-bl { bottom: -60px; left: -60px; width: 380px; height: 480px; transform: scaleY(-1); }
+  .leaf-br { bottom: -40px; right: -60px; width: 320px; height: 400px; transform: scale(-1, -1); }
   @media (max-width: 640px) {
+    .leaf-tl { width: 180px; height: 230px; }
+    .leaf-tr { width: 150px; height: 190px; }
+    .leaf-bl { width: 200px; height: 250px; }
+    .leaf-br { width: 170px; height: 210px; }
     .bg-botanicals svg { opacity: 0.32; }
   }
   /* Content must sit above the background layers */
