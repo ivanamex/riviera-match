@@ -988,6 +988,33 @@
     border-top: 1px solid var(--border);
   }
 
+  /* ============ Name capture ============ */
+  .name-capture-input {
+    margin: 40px 0 36px;
+  }
+  .name-capture-input input {
+    width: 100%;
+    max-width: 360px;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem;
+    font-style: italic;
+    text-align: center;
+    padding: 12px 14px 16px;
+    transition: border-color 0.3s ease;
+  }
+  .name-capture-input input:focus {
+    outline: none;
+    border-bottom-color: var(--gold);
+  }
+  .name-capture-input input::placeholder {
+    color: var(--muted);
+    opacity: 0.55;
+  }
+
   /* ============ Lightbox ============ */
   .lightbox {
     position: fixed;
@@ -1052,8 +1079,8 @@
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
   /* ============ Progressive reveal ============ */
-  #review-section, #results-section, #share-section { display: none; }
-  #review-section.visible, #results-section.visible, #share-section.visible {
+  #review-section, #name-capture-section, #results-section, #share-section { display: none; }
+  #review-section.visible, #name-capture-section.visible, #results-section.visible, #share-section.visible {
     display: flex;
     animation: sectionFade 0.8s ease forwards;
   }
@@ -1282,7 +1309,7 @@
     <div id="desktop-review">
       <div class="tile-grid" id="tile-grid"></div>
       <div class="desktop-cta">
-        <button class="btn-primary" id="see-results-desktop" disabled onclick="showResults()">See results</button>
+        <button class="btn-primary" id="see-results-desktop" disabled onclick="showNameCapture()">See results</button>
       </div>
     </div>
   </div>
@@ -1299,6 +1326,24 @@
     </div>
   </div>
 </div>
+
+<!-- ========== Section 3.5: Name capture ========== -->
+<section class="section" id="name-capture-section">
+  <div class="container" style="max-width: 520px; text-align: center;">
+    <div class="section-kicker">One last thing</div>
+    <h2 class="section-title">Who's this for?</h2>
+    <p class="section-sub">So we know who we're making notes for.</p>
+    <div class="name-capture-input">
+      <input type="text" id="reviewer-name-input" placeholder="Your first name" autocomplete="given-name" />
+    </div>
+    <div class="center-cta">
+      <button class="btn-primary" id="name-submit" onclick="submitName()">See my matches</button>
+    </div>
+    <div style="margin-top: 20px;">
+      <a class="btn-ghost" onclick="skipName()" style="font-size: 0.68rem; cursor: pointer;">Skip</a>
+    </div>
+  </div>
+</section>
 
 <!-- ========== Section 4: Results ========== -->
 <section class="section" id="results-section">
@@ -1799,7 +1844,7 @@ function nextProperty() {
     renderMobileCard();
     scrollToReviewTop();
   } else if (allRated()) {
-    showResults();
+    showNameCapture();
   }
   updateHash();
 }
@@ -1894,6 +1939,29 @@ function adjustPrefs() {
   smoothScrollTo('review-section');
 }
 
+/* ============================================================
+   NAME CAPTURE
+   ============================================================ */
+function showNameCapture() {
+  document.getElementById('name-capture-section').classList.add('visible');
+  smoothScrollTo('name-capture-section');
+  setTimeout(() => {
+    const inp = document.getElementById('reviewer-name-input');
+    if (!inp) return;
+    if (state.reviewerName) inp.value = state.reviewerName;
+    if (!state.reviewerName) inp.focus();
+  }, 400);
+}
+function submitName() {
+  const raw = document.getElementById('reviewer-name-input').value.trim();
+  state.reviewerName = raw || 'Anonymous';
+  showResults();
+}
+function skipName() {
+  state.reviewerName = 'Anonymous';
+  showResults();
+}
+
 function smoothScrollTo(id) {
   setTimeout(() => {
     document.getElementById(id).scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1965,7 +2033,9 @@ function showResults() {
   const ranked = computeRankings();
 
   document.getElementById('results-title').textContent =
-    `${CLIENT.name}, here's what you found.`;
+    (state.reviewerName && state.reviewerName !== 'Anonymous')
+      ? `${state.reviewerName}, here's what you found.`
+      : `Here's what was found.`;
 
   document.getElementById('combined-grid').innerHTML =
     ranked.length
@@ -1994,8 +2064,8 @@ function showResults() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        _subject: `Riviera Match — ${CLIENT.name} completed the matcher`,
-        client: CLIENT.name,
+        _subject: `Riviera Match — ${state.reviewerName || 'Someone'} completed the matcher`,
+        reviewer: state.reviewerName || 'Anonymous',
         summary: summary,
         comments: commentsText || "(no comments left)",
         url: location.href,
@@ -2028,6 +2098,7 @@ function updateHash() {
     .map(([pid, text]) => `${pid}:${encodeURIComponent(text)}`);
   const parts = [];
   if (ratingParts.length) parts.push(`r=${ratingParts.join(',')}`);
+  if (state.reviewerName && state.reviewerName !== 'Anonymous') parts.push(`n=${encodeURIComponent(state.reviewerName)}`);
   if (commentEntries.length) parts.push(`c=${commentEntries.join(',')}`);
   if (parts.length === 0) return;
   history.replaceState(null, '', `#${parts.join('&')}`);
@@ -2040,10 +2111,15 @@ function loadHash() {
     // Parse manually (not URLSearchParams) so we don't auto-decode the c= value
     // before splitting — encoded commas/colons inside comment text must survive.
     const rMatch = hash.match(/(?:^|&)r=([^&]*)/);
+    const nMatch = hash.match(/(?:^|&)n=([^&]*)/);
     const cMatch = hash.match(/(?:^|&)c=(.*)$/);
     const r = rMatch ? rMatch[1] : null;
+    const n = nMatch ? nMatch[1] : null;
     const c = cMatch ? cMatch[1] : null;
-    if (!r && !c) return false;
+    if (!r && !n && !c) return false;
+    if (n) {
+      try { state.reviewerName = decodeURIComponent(n); } catch (e) {}
+    }
     if (r) {
       r.split(',').filter(Boolean).forEach(entry => {
         const [propId, digits] = entry.split(':');
@@ -2103,7 +2179,7 @@ function downloadPDF() {
 
   doc.setTextColor(0, 0, 0);
   doc.setFontSize(16);
-  doc.text(`${CLIENT.name}'s Property Matches`, 20, 55);
+  doc.text(`${state.reviewerName && state.reviewerName !== 'Anonymous' ? state.reviewerName + "'s" : 'Your'} Property Matches`, 20, 55);
   doc.setFontSize(10);
   doc.setTextColor(120, 120, 120);
   doc.text(new Date().toLocaleDateString(), 20, 62);
@@ -2157,7 +2233,7 @@ function downloadPDF() {
     });
   }
 
-  doc.save(`Riviera-Match-${CLIENT.name}-${new Date().toISOString().slice(0,10)}.pdf`);
+  doc.save(`Riviera-Match-${state.reviewerName && state.reviewerName !== 'Anonymous' ? state.reviewerName : 'results'}-${new Date().toISOString().slice(0,10)}.pdf`);
 }
 function inviteSecondOpinion() {
   const url = location.origin + location.pathname;
@@ -2224,6 +2300,14 @@ document.addEventListener('keydown', e => {
   if (isLightboxOpen()) { closeLightbox(); return; }
   if (state.modalPropId) closeModal();
 });
+
+// Enter in the reviewer-name input submits
+(() => {
+  const inp = document.getElementById('reviewer-name-input');
+  if (inp) inp.addEventListener('keydown', e => {
+    if (e.key === 'Enter') { e.preventDefault(); submitName(); }
+  });
+})();
 
 if (loadHash()) {
   state.activeProperties = PROPERTIES;
