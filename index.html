@@ -718,11 +718,16 @@
     overflow: hidden;
   }
   .match-card:hover { border-color: rgba(184,150,90,0.45); transform: translateY(-3px); }
-  .match-card.top { border-color: var(--gold); box-shadow: 0 0 70px rgba(184,150,90,0.15); }
+  .match-card.top {
+    border-color: var(--gold);
+    box-shadow: 0 0 70px rgba(184,150,90,0.15);
+    overflow: visible;
+    margin-top: 14px;
+  }
   .top-badge {
     position: absolute;
-    top: -12px;
-    left: 28px;
+    top: -11px;
+    left: 22px;
     background: var(--gold);
     color: var(--bg);
     font-size: 0.6rem;
@@ -730,6 +735,8 @@
     letter-spacing: 0.32em;
     padding: 7px 14px;
     text-transform: uppercase;
+    white-space: nowrap;
+    z-index: 3;
   }
   .match-top-row {
     display: flex;
@@ -804,11 +811,12 @@
   .match-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
   .match-gallery {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 8px;
     margin-bottom: 20px;
   }
-  .match-gallery .gallery-box { opacity: 0.35; }
+  .match-gallery .gallery-box { opacity: 1; }
+  .match-gallery .gallery-box-filled { opacity: 1; border-color: var(--border); }
   .match-rated-count {
     font-size: 0.68rem;
     letter-spacing: 0.2em;
@@ -1806,18 +1814,17 @@ function renderResultCard(r, rank, isTop) {
 }
 
 function renderMatchGalleryBoxes(prop) {
-  const slots = (prop.gallery && prop.gallery.length) ? prop.gallery.slice(0, 3) : [null, null, null];
-  while (slots.length < 3) slots.push(null);
-  return slots.map(url => {
-    if (url) {
-      const src = escapeAttr(url);
-      return `
-        <div class="gallery-box gallery-box-filled" onclick="openLightbox('${src}')">
-          <img src="${src}" loading="lazy" alt="" onerror="imgThumbError(this)" />
-        </div>
-      `;
-    }
-    return `<div class="gallery-box"><i class="fa-regular fa-image"></i></div>`;
+  const photos = [prop.hero, ...(prop.gallery || [])].filter(Boolean).slice(0, 4);
+  if (photos.length === 0) {
+    return Array(4).fill('<div class="gallery-box"><i class="fa-regular fa-image"></i></div>').join('');
+  }
+  return photos.map(url => {
+    const src = escapeAttr(url);
+    return `
+      <div class="gallery-box gallery-box-filled" onclick="openLightbox('${src}')">
+        <img src="${src}" loading="lazy" alt="" onerror="imgThumbError(this)" />
+      </div>
+    `;
   }).join('');
 }
 
@@ -1930,7 +1937,7 @@ function downloadPDF() {
   doc.text("Riviera Match", 105, 25, { align: "center" });
   doc.setFontSize(11);
   doc.setTextColor(100, 100, 100);
-  doc.text("by Weber-Burić Real Estate", 105, 33, { align: "center" });
+  doc.text("by Weber-Buric Real Estate", 105, 33, { align: "center" });
 
   doc.setTextColor(0, 0, 0);
   doc.setFontSize(16);
@@ -1962,7 +1969,7 @@ function downloadPDF() {
 
   doc.setFontSize(8);
   doc.setTextColor(150, 150, 150);
-  doc.text("Weber-Burić Real Estate · Playa del Carmen", 105, 285, { align: "center" });
+  doc.text("Weber-Buric Real Estate · Playa del Carmen", 105, 285, { align: "center" });
 
   doc.save(`Riviera-Match-${CLIENT.name}-${new Date().toISOString().slice(0,10)}.pdf`);
 }
