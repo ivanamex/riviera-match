@@ -552,6 +552,45 @@
 
   /* ============ Ratings ============ */
   .rating-block { margin-top: 6px; }
+  .prop-comment-wrap {
+    margin-top: 28px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+  }
+  .prop-comment-label {
+    display: block;
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+  .prop-comment {
+    width: 100%;
+    background: rgba(184,150,90,0.03);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.92rem;
+    font-weight: 300;
+    line-height: 1.55;
+    padding: 14px 16px;
+    resize: vertical;
+    min-height: 80px;
+    transition: border-color 0.3s ease, background 0.3s ease;
+    box-sizing: border-box;
+  }
+  .prop-comment:focus {
+    outline: none;
+    border-color: var(--gold);
+    background: rgba(184,150,90,0.05);
+  }
+  .prop-comment::placeholder {
+    color: var(--muted);
+    opacity: 0.6;
+    font-style: italic;
+  }
   .rating-group { margin-bottom: 28px; }
   .rating-group-heading {
     font-size: 0.65rem;
@@ -1329,6 +1368,9 @@ const FEATURE_GROUPS = [
     { id: "games",      label: "Billiard & games",  desc: "Entertainment lounge.",                    icon: "fa-chess" },
     { id: "water",      label: "Water softener",    desc: "Whole-community water treatment.",         icon: "fa-droplet" },
     { id: "parking",    label: "Parking",           desc: "Covered, underground, or shared.",         icon: "fa-square-parking" }
+  ]},
+  { heading: "Wow factor", features: [
+    { id: "wow", label: "Wow factor", desc: "A soul match. The gut reaction you had walking in — does this place already feel like yours?", icon: "fa-heart" }
   ]}
 ];
 
@@ -1339,6 +1381,7 @@ const FEATURES_FLAT = FEATURE_GROUPS.flatMap(g => g.features);
    ============================================================ */
 const state = {
   ratings: {},
+  comments: {},
   currentMobileIndex: 0,
   activeProperties: [],
   modalPropId: null
@@ -1397,6 +1440,10 @@ function renderPropertyCardDOM(prop) {
     ${renderGallery(prop)}
     <div class="rating-block">
       ${renderRatingBlock(prop)}
+    </div>
+    <div class="prop-comment-wrap">
+      <label class="prop-comment-label">Anything else on your mind?</label>
+      <textarea class="prop-comment" data-prop-id="${prop.id}" placeholder="Something you loved, a concern, a question — or leave blank." rows="3">${escapeHtml((state.comments && state.comments[prop.id]) || '')}</textarea>
     </div>
   `;
 
@@ -1596,6 +1643,15 @@ function attachRatingHandlers(root, propId) {
         // Bubble completion state up to UI chrome
         onRatingChanged(propId);
       });
+    });
+  });
+  // Free-text comment listener (per property)
+  root.querySelectorAll('.prop-comment').forEach(ta => {
+    ta.addEventListener('input', () => {
+      const pid = ta.dataset.propId;
+      if (!state.comments) state.comments = {};
+      state.comments[pid] = ta.value;
+      updateHash();
     });
   });
 }
@@ -1851,6 +1907,12 @@ function showResults() {
     const summary = ranked.map((r, i) =>
       `${i + 1}. ${r.property.condo} (${r.property.unit}) — ${r.pct}% — ${r.property.priceDisplay}`
     ).join('\n');
+    const commentsText = Object.entries(state.comments || {})
+      .filter(([_, v]) => v && v.trim())
+      .map(([pid, text]) => {
+        const prop = PROPERTIES.find(p => p.id === pid);
+        return `${prop ? prop.condo : pid}: ${text}`;
+      }).join('\n\n');
     fetch('https://formsubmit.co/ajax/weber.buric@gmail.com', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -1858,6 +1920,7 @@ function showResults() {
         _subject: `Riviera Match — ${CLIENT.name} completed the matcher`,
         client: CLIENT.name,
         summary: summary,
+        comments: commentsText || "(no comments left)",
         url: location.href,
         timestamp: new Date().toISOString()
       })
@@ -1883,29 +1946,51 @@ function ratingsToCompact(propId) {
 
 function updateHash() {
   const ratingParts = Object.keys(state.ratings).map(ratingsToCompact).filter(Boolean);
-  if (ratingParts.length === 0) return;
-  history.replaceState(null, '', `#r=${ratingParts.join(',')}`);
+  const commentEntries = Object.entries(state.comments || {})
+    .filter(([_, v]) => v && v.trim())
+    .map(([pid, text]) => `${pid}:${encodeURIComponent(text)}`);
+  const parts = [];
+  if (ratingParts.length) parts.push(`r=${ratingParts.join(',')}`);
+  if (commentEntries.length) parts.push(`c=${commentEntries.join(',')}`);
+  if (parts.length === 0) return;
+  history.replaceState(null, '', `#${parts.join('&')}`);
 }
 
 function loadHash() {
   const hash = location.hash.slice(1);
   if (!hash) return false;
   try {
-    const params = new URLSearchParams(hash);
-    const r = params.get('r');
-    if (!r) return false;
-    r.split(',').filter(Boolean).forEach(entry => {
-      const [propId, digits] = entry.split(':');
-      if (!propId || !digits) return;
-      ensureRatings(propId);
-      // Map positionally up to whichever is shorter — if the hash was generated
-      // with a different FEATURES_FLAT layout, extras are dropped, missing pad to 0.
-      const n = Math.min(digits.length, FEATURES_FLAT.length);
-      for (let i = 0; i < n; i++) {
-        const v = parseInt(digits[i], 10);
-        if (v >= 0 && v <= 5) state.ratings[propId][FEATURES_FLAT[i].id] = v;
-      }
-    });
+    // Parse manually (not URLSearchParams) so we don't auto-decode the c= value
+    // before splitting — encoded commas/colons inside comment text must survive.
+    const rMatch = hash.match(/(?:^|&)r=([^&]*)/);
+    const cMatch = hash.match(/(?:^|&)c=(.*)$/);
+    const r = rMatch ? rMatch[1] : null;
+    const c = cMatch ? cMatch[1] : null;
+    if (!r && !c) return false;
+    if (r) {
+      r.split(',').filter(Boolean).forEach(entry => {
+        const [propId, digits] = entry.split(':');
+        if (!propId || !digits) return;
+        ensureRatings(propId);
+        // Map positionally up to whichever is shorter — if the hash was generated
+        // with a different FEATURES_FLAT layout, extras are dropped, missing pad to 0.
+        const n = Math.min(digits.length, FEATURES_FLAT.length);
+        for (let i = 0; i < n; i++) {
+          const v = parseInt(digits[i], 10);
+          if (v >= 0 && v <= 5) state.ratings[propId][FEATURES_FLAT[i].id] = v;
+        }
+      });
+    }
+    if (c) {
+      // c= is always last in updateHash output; encoded text has no literal ',' or ':'
+      c.split(',').filter(Boolean).forEach(entry => {
+        const ix = entry.indexOf(':');
+        if (ix <= 0) return;
+        const pid = entry.slice(0, ix);
+        const encoded = entry.slice(ix + 1);
+        try { state.comments[pid] = decodeURIComponent(encoded); } catch (e) {}
+      });
+    }
     return true;
   } catch (e) { return false; }
 }
@@ -1970,6 +2055,30 @@ function downloadPDF() {
   doc.setFontSize(8);
   doc.setTextColor(150, 150, 150);
   doc.text("Weber-Buric Real Estate · Playa del Carmen", 105, 285, { align: "center" });
+
+  // "Your notes" page — only if any comments were left
+  const hasComments = Object.values(state.comments || {}).some(v => v && v.trim());
+  if (hasComments) {
+    doc.addPage();
+    doc.setTextColor(184, 150, 90);
+    doc.setFontSize(16);
+    doc.text("Your notes", 20, 30);
+    let ny = 45;
+    Object.entries(state.comments).forEach(([pid, text]) => {
+      if (!text || !text.trim()) return;
+      const prop = PROPERTIES.find(p => p.id === pid);
+      if (!prop) return;
+      doc.setTextColor(184, 150, 90);
+      doc.setFontSize(12);
+      doc.text(prop.condo, 20, ny);
+      doc.setTextColor(60, 60, 60);
+      doc.setFontSize(10);
+      const lines = doc.splitTextToSize(text, 170);
+      doc.text(lines, 20, ny + 7);
+      ny += 14 + lines.length * 5;
+      if (ny > 260) { doc.addPage(); ny = 30; }
+    });
+  }
 
   doc.save(`Riviera-Match-${CLIENT.name}-${new Date().toISOString().slice(0,10)}.pdf`);
 }
