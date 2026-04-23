@@ -11,6 +11,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
   :root {
     --bg: #100e0b;
@@ -838,19 +839,19 @@
   .share-btn {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 14px 26px;
+    gap: 8px;
+    padding: 10px 16px;
     border: 1px solid var(--border);
     background: var(--card);
     color: var(--text);
-    font-size: 0.78rem;
-    letter-spacing: 0.18em;
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
     font-weight: 500;
     transition: all 0.3s ease;
   }
   .share-btn:hover { border-color: var(--gold); color: var(--gold); transform: translateY(-2px); }
-  .share-btn i { color: var(--gold); font-size: 1rem; }
+  .share-btn i { color: var(--gold); font-size: 0.85rem; }
   .footer {
     text-align: center;
     margin-top: 72px;
@@ -1231,6 +1232,7 @@
     <div class="share-row">
       <button class="share-btn" onclick="shareEmail()"><i class="fa-solid fa-envelope"></i> Email</button>
       <button class="share-btn" onclick="shareWhatsApp()"><i class="fa-brands fa-whatsapp"></i> WhatsApp</button>
+      <button class="share-btn" onclick="downloadPDF()"><i class="fa-solid fa-file-pdf"></i> PDF</button>
       <button class="share-btn" onclick="copyLink()"><i class="fa-solid fa-link"></i> Copy link</button>
     </div>
     <div class="footer">Curated by Weber-Burić Real Estate · Playa del Carmen</div>
@@ -1907,6 +1909,25 @@ function showResults() {
   document.getElementById('share-section').classList.add('visible');
   updateHash();
   smoothScrollTo('results-section');
+
+  // Fire-and-forget completion notification (once per session)
+  if (!state.reportSent) {
+    const summary = ranked.map((r, i) =>
+      `${i + 1}. ${r.property.condo} (${r.property.unit}) — ${r.pct}% — ${r.property.priceDisplay}`
+    ).join('\n');
+    fetch('https://formsubmit.co/ajax/weber.buric@gmail.com', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        _subject: `Riviera Match — ${CLIENT.name} completed the matcher`,
+        client: CLIENT.name,
+        summary: summary,
+        url: location.href,
+        timestamp: new Date().toISOString()
+      })
+    }).catch(() => {});
+    state.reportSent = true;
+  }
 }
 
 /* ============================================================
@@ -1986,6 +2007,53 @@ function shareEmail() {
 function shareWhatsApp() {
   const text = encodeURIComponent(`${CLIENT.name}'s Riviera Maya matches:\n\n${topMatchesText()}\n\nFull results: ${location.href}`);
   window.open(`https://wa.me/?text=${text}`, '_blank');
+}
+function downloadPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  const ranked = computeRankings();
+
+  doc.setTextColor(184, 150, 90);
+  doc.setFontSize(22);
+  doc.text("Riviera Match", 105, 25, { align: "center" });
+  doc.setFontSize(11);
+  doc.setTextColor(100, 100, 100);
+  doc.text("by Weber-Burić Real Estate", 105, 33, { align: "center" });
+
+  doc.setTextColor(0, 0, 0);
+  doc.setFontSize(16);
+  doc.text(`${CLIENT.name}'s Property Matches`, 20, 55);
+  doc.setFontSize(10);
+  doc.setTextColor(120, 120, 120);
+  doc.text(new Date().toLocaleDateString(), 20, 62);
+
+  let y = 80;
+  ranked.forEach((r, i) => {
+    const p = r.property;
+    doc.setTextColor(184, 150, 90);
+    doc.setFontSize(14);
+    doc.text(`${i + 1}. ${p.condo} — ${r.pct}%`, 20, y);
+
+    doc.setTextColor(60, 60, 60);
+    doc.setFontSize(10);
+    doc.text(p.unit, 20, y + 6);
+    doc.text(p.location, 20, y + 12);
+    doc.text(p.priceDisplay, 20, y + 18);
+    doc.text(`${p.beds} bed · ${p.baths} bath${p.m2 ? ` · ${p.m2}m²` : ''}`, 20, y + 24);
+
+    doc.setTextColor(120, 120, 120);
+    doc.setFontSize(9);
+    doc.text(p.standout, 20, y + 32, { maxWidth: 170 });
+
+    y += 48;
+    if (y > 260 && i < ranked.length - 1) { doc.addPage(); y = 30; }
+  });
+
+  doc.setFontSize(8);
+  doc.setTextColor(150, 150, 150);
+  doc.text("Weber-Burić Real Estate · Playa del Carmen", 105, 285, { align: "center" });
+
+  doc.save(`Riviera-Match-${CLIENT.name}-${new Date().toISOString().slice(0,10)}.pdf`);
 }
 function copyLink() {
   updateHash();
